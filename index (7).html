@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koji smjer je za mene? — TSD Kviz</title>
+  <meta name="description" content="Otkrij koji smjer Tehničke škole Daruvar najviše odgovara tvojim interesima. 10 pitanja, odmah rezultat.">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --c-prog:   #1B4F8A;
+      --c-mehat:  #2E7D32;
+      --c-elek:   #6A1B9A;
+      --c-promet: #00838F;
+      --c-elektro:#F9A825;
+      --c-auto:   #E53935;
+      --c-vozac:  #795548;
+      --c-oper:   #546E7A;
+      --c-monter: #FF6F00;
+      --accent:   #F5821F;
+      --blue:     #1B4F8A;
+      --bg:       #F4F7FC;
+      --bg2:      #FFFFFF;
+      --bg3:      #EAF0FB;
+      --bg4:      #DDE6F5;
+      --border:   #C5D5EE;
+      --border2:  #A8C0E0;
+      --text:     #152040;
+      --text2:    #445878;
+      --text3:    #8AAAC8;
+      --r:        14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── ambient bg ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 60%, rgba(27,79,138,.07) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 35% at 90% 10%, rgba(245,130,31,.06) 0%, transparent 45%),
+        radial-gradient(ellipse 40% 30% at 50% 100%, rgba(106,27,154,.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #confetti-canvas {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
+
+    /* ══════════════════════════════
+       SCREENS
+    ══════════════════════════════ */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ══════════════════════════════
+       START SCREEN
+    ══════════════════════════════ */
+    #start-screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 32px 20px 48px;
+      text-align: center;
+    }
+
+    .start-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(27,79,138,.1);
+      border: 1px solid rgba(27,79,138,.35);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 30px;
+      animation: fadeDown .6s ease backwards;
+    }
+
+    .start-h1 {
+      font-size: clamp(34px, 9vw, 62px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 10px;
+      animation: fadeDown .6s ease .1s backwards;
+    }
+
+    .start-h1 em {
+      font-style: normal;
+      background: linear-gradient(130deg, #F5821F 0%, #FFB347 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .start-sub {
+      color: var(--text2);
+      font-size: clamp(14px, 3.5vw, 17px);
+      line-height: 1.65;
+      max-width: 500px;
+      margin-bottom: 36px;
+      animation: fadeDown .6s ease .2s backwards;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      justify-content: center;
+      max-width: 580px;
+      margin-bottom: 44px;
+      animation: fadeDown .6s ease .3s backwards;
+    }
+
+    .pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1.5px solid;
+      opacity: .85;
+      transition: opacity .2s, transform .2s;
+    }
+    .pill:hover { opacity: 1; transform: scale(1.05); }
+
+    .btn-start {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #1B4F8A 0%, #2563EB 100%);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      padding: 17px 48px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 50px rgba(27,79,138,.55), 0 4px 20px rgba(0,0,0,.4);
+      transition: all .25s cubic-bezier(.4,0,.2,1);
+      letter-spacing: .3px;
+      animation: fadeDown .6s ease .4s backwards;
+    }
+    .btn-start:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 0 70px rgba(27,79,138,.75), 0 8px 30px rgba(0,0,0,.5); }
+    .btn-start:active { transform: scale(.97); }
+    .btn-start svg { transition: transform .25s; }
+    .btn-start:hover svg { transform: translateX(4px); }
+
+    .start-meta {
+      margin-top: 18px;
+      color: var(--text3);
+      font-size: 13px;
+      animation: fadeDown .6s ease .5s backwards;
+    }
+
+    /* ══════════════════════════════
+       QUIZ SCREEN
+    ══════════════════════════════ */
+    .quiz-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(244,247,252,.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 13px 18px;
+    }
+
+    .quiz-header-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .q-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text2);
+      white-space: nowrap;
+      min-width: 68px;
+    }
+    .q-counter b { color: var(--accent); font-size: 15px; }
+
+    .prog-track {
+      flex: 1;
+      height: 7px;
+      background: var(--bg3);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue) 0%, var(--accent) 100%);
+      border-radius: 100px;
+      transition: width .55s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 0 12px rgba(245,130,31,.4);
+    }
+
+    .quiz-body {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 32px 18px 60px;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* Question card wrapper */
+    .q-wrap { position: relative; }
+
+    .q-emoji {
+      display: block;
+      font-size: 48px;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+    }
+
+    .q-text {
+      font-size: clamp(21px, 5.5vw, 30px);
+      font-weight: 800;
+      line-height: 1.28;
+      margin-bottom: 30px;
+      color: var(--text);
+    }
+
+    .answers { display: flex; flex-direction: column; gap: 11px; }
+
+    .ans-btn {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 16px 20px;
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      text-align: left;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+      transition:
+        border-color .2s,
+        background .2s,
+        transform .18s cubic-bezier(.4,0,.2,1),
+        box-shadow .2s,
+        opacity .3s;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    /* Shimmer on hover */
+    .ans-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg,
+        rgba(27,79,138,.12) 0%,
+        rgba(245,130,31,.07) 100%);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .ans-btn:hover::before { opacity: 1; }
+
+    .ans-btn:hover {
+      border-color: rgba(27,79,138,.7);
+      transform: translateX(5px);
+      box-shadow: 0 4px 28px rgba(0,0,0,.35), -3px 0 0 var(--blue);
+    }
+    .ans-btn:active { transform: scale(.985); }
+
+    .ans-letter {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--bg4);
+      border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--text2);
+      transition: background .2s, border-color .2s, color .2s, transform .2s;
+    }
+    .ans-btn:hover .ans-letter {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* Selected */
+    .ans-btn.selected {
+      background: rgba(27,79,138,.22);
+      border-color: var(--blue);
+      transform: translateX(5px);
+      pointer-events: none;
+      box-shadow: 0 4px 28px rgba(0,0,0,.35), -3px 0 0 var(--blue), 0 0 20px rgba(27,79,138,.2);
+    }
+    .ans-btn.selected::before { opacity: 1; }
+    .ans-btn.selected .ans-letter {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+    .ans-btn.selected .check {
+      display: flex;
+    }
+
+    .check {
+      display: none;
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      align-items: center; justify-content: center;
+      margin-left: auto;
+      animation: popIn .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .check svg { width: 12px; height: 12px; }
+
+    .ans-btn.dimmed { opacity: .3; pointer-events: none; }
+
+    /* Entrance animations */
+    .q-wrap.enter .q-emoji  { animation: popIn .4s cubic-bezier(.34,1.56,.64,1) .05s backwards; }
+    .q-wrap.enter .q-text   { animation: fadeRight .38s ease .08s backwards; }
+    .q-wrap.enter .ans-btn:nth-child(1) { animation: fadeRight .35s ease .12s backwards; }
+    .q-wrap.enter .ans-btn:nth-child(2) { animation: fadeRight .35s ease .17s backwards; }
+    .q-wrap.enter .ans-btn:nth-child(3) { animation: fadeRight .35s ease .22s backwards; }
+    .q-wrap.enter .ans-btn:nth-child(4) { animation: fadeRight .35s ease .27s backwards; }
+
+    .q-wrap.exit { animation: exitLeft .28s ease forwards; }
+
+    @keyframes fadeRight {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes exitLeft {
+      to { opacity: 0; transform: translateX(-32px); }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(.5) rotate(-8deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════
+       RESULTS SCREEN
+    ══════════════════════════════ */
+    #results-screen.active { display: block; }
+
+    .res-header {
+      text-align: center;
+      padding: 52px 20px 28px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .res-confetti-icon {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 16px;
+      animation: popIn .5s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    .res-title {
+      font-size: clamp(26px, 7vw, 40px);
+      font-weight: 900;
+      margin-bottom: 8px;
+      animation: fadeUp .5s ease .1s backwards;
+    }
+
+    .res-sub {
+      color: var(--text2);
+      font-size: 16px;
+      animation: fadeUp .5s ease .15s backwards;
+    }
+
+    /* Top 3 cards */
+    .top3 {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .res-card {
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 22px 20px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .55s cubic-bezier(.4,0,.2,1) backwards;
+    }
+    .res-card:nth-child(1) { animation-delay: .2s; }
+    .res-card:nth-child(2) { animation-delay: .32s; }
+    .res-card:nth-child(3) { animation-delay: .44s; }
+
+    /* Left accent bar */
+    .res-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 20px 0 0 20px;
+    }
+
+    /* Winner glow */
+    .res-card.rank-1 {
+      border-color: var(--card-color, var(--blue));
+      box-shadow: 0 0 40px rgba(var(--card-rgb, 27,79,138), .18);
+    }
+
+    .res-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .res-rank { font-size: 30px; flex-shrink: 0; line-height: 1; }
+
+    .res-name-wrap { flex: 1; min-width: 0; }
+
+    .res-name {
+      font-size: clamp(16px, 4.5vw, 20px);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .res-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .res-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      color: var(--text2);
+    }
+
+    .res-score-num {
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 5px 13px;
+      border-radius: 100px;
+      border: 1.5px solid;
+      margin-top: 2px;
+    }
+
+    .res-desc {
+      font-size: 13.5px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .score-bar-bg {
+      background: var(--bg4);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      width: 0;
+      transition: width 1.1s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Rest of programs */
+    .all-scores {
+      max-width: 700px;
+      margin: 24px auto 0;
+      padding: 0 16px;
+      animation: fadeUp .5s ease .55s backwards;
+    }
+
+    .all-scores-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 8px;
+    }
+
+    .mini-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .mini-name {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 7px;
+      line-height: 1.3;
+    }
+
+    .mini-bar-bg {
+      background: var(--bg4);
+      border-radius: 100px;
+      height: 4px;
+      overflow: hidden;
+    }
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      width: 0;
+      transition: width 1s ease;
+    }
+
+    /* CTA wrapper */
+    .res-cta {
+      max-width: 700px;
+      margin: 28px auto 0;
+      padding: 0 16px 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: fadeUp .5s ease .65s backwards;
+    }
+
+    /* ── Contact card ── */
+    .contact-card {
+      background: var(--bg2);
+      border: 2px solid var(--blue);
+      border-radius: 20px;
+      padding: 24px 22px 20px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 4px 32px rgba(27,79,138,.1);
+    }
+
+    .cc-header {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .cc-emoji { font-size: 34px; flex-shrink: 0; line-height: 1; }
+    .cc-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+    .cc-sub   { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+    .cf-row { margin-bottom: 13px; }
+    .cf-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 5px;
+    }
+    .cf-input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 15px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .cf-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(27,79,138,.12);
+    }
+    .cf-input::placeholder { color: var(--text3); }
+    .cf-input.invalid { border-color: #E53935; box-shadow: 0 0 0 3px rgba(229,57,53,.1); }
+    .cf-textarea {
+      resize: vertical;
+      min-height: 88px;
+      line-height: 1.5;
+    }
+
+    .cf-program-note {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue);
+      background: rgba(27,79,138,.07);
+      border: 1px solid rgba(27,79,138,.18);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      min-height: 36px;
+      line-height: 1.4;
+    }
+
+    .cf-error {
+      display: none;
+      font-size: 12.5px;
+      color: #C62828;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .cf-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--blue), #2563EB);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 13px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(27,79,138,.28);
+      transition: all .2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .cf-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(27,79,138,.4); }
+    .cf-submit:active:not(:disabled) { transform: scale(.98); }
+    .cf-submit:disabled { opacity: .7; cursor: not-allowed; }
+
+    .cf-spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .cf-send-error {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(229,57,53,.08);
+      border: 1px solid rgba(229,57,53,.3);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 13.5px;
+      color: #C62828;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .cf-success {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(16,185,129,.08);
+      border: 1px solid rgba(16,185,129,.3);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 13.5px;
+      color: #047857;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .cf-or {
+      position: relative;
+      text-align: center;
+      margin: 20px 0 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+    .cf-or::before, .cf-or::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: calc(50% - 72px);
+      height: 1px;
+      background: var(--border);
+    }
+    .cf-or::before { left: 0; }
+    .cf-or::after  { right: 0; }
+
+    .cf-direct {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cf-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text2);
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .cf-link:hover { border-color: var(--blue); color: var(--blue); background: rgba(27,79,138,.05); }
+
+    .cta-secondary {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-orange {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: linear-gradient(135deg, #F5821F, #E0710F);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 15px 40px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 40px rgba(245,130,31,.45);
+      transition: all .25s;
+      text-decoration: none;
+      letter-spacing: .2px;
+    }
+    .btn-orange:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(245,130,31,.65); }
+
+    .btn-ghost {
+      background: transparent;
+      border: 2px solid var(--border2);
+      color: var(--text2);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 11px 30px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+
+    .footer-line {
+      text-align: center;
+      color: var(--text3);
+      font-size: 12px;
+      padding: 0 16px 20px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 380px) {
+      .ans-btn { padding: 13px 15px; font-size: 14px; gap: 12px; }
+      .ans-letter { width: 32px; height: 32px; font-size: 12px; }
+      .mini-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 600px) {
+      .ans-btn { font-size: 16px; }
+      .answers { gap: 13px; }
+    }
+  </style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div class="app">
+
+  <!-- ════════════════ START ════════════════ -->
+  <div id="start-screen" class="screen active">
+    <div class="start-chip">⚡ Tehnička škola Daruvar</div>
+    <h1 class="start-h1">Koji smjer<br>je <em>za tebe?</em></h1>
+    <p class="start-sub">
+      Odgovori na 10 pitanja i otkrij koji od 9 programa TSD-a
+      najviše odgovara tvojim interesima, vještinama i osobnosti.
+    </p>
+    <div class="pills" id="pills-wrap"></div>
+    <button class="btn-start" id="btn-start">
+      Pokreni kviz
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+    <p class="start-meta">10 pitanja · ~2 minute · Bez registracije</p>
+  </div>
+
+  <!-- ════════════════ QUIZ ════════════════ -->
+  <div id="quiz-screen" class="screen">
+    <div class="quiz-header">
+      <div class="quiz-header-inner">
+        <div class="q-counter">Pitanje <b id="q-num">1</b>/10</div>
+        <div class="prog-track">
+          <div class="prog-fill" id="prog-fill" style="width:10%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-body" id="quiz-body"></div>
+  </div>
+
+  <!-- ════════════════ RESULTS ════════════════ -->
+  <div id="results-screen" class="screen">
+    <div class="res-header">
+      <span class="res-confetti-icon">🎉</span>
+      <h2 class="res-title">Tvoji rezultati</h2>
+      <p class="res-sub">Na temelju tvojih odgovora preporučujemo:</p>
+    </div>
+    <div class="top3" id="top3"></div>
+    <div class="all-scores">
+      <div class="all-scores-label">Svi programi — bodovni pregled</div>
+      <div class="mini-grid" id="mini-grid"></div>
+    </div>
+    <div class="res-cta">
+
+      <!-- Contact card -->
+      <div class="contact-card">
+        <div class="cc-header">
+          <span class="cc-emoji">📬</span>
+          <div>
+            <div class="cc-title">Ostanimo u kontaktu!</div>
+            <div class="cc-sub">Ostavi nam svoje podatke — javit ćemo ti se s više informacija o tvom smjeru.</div>
+          </div>
+        </div>
+
+        <form id="contact-form" onsubmit="submitContact(event)" novalidate>
+          <div class="cf-row">
+            <label class="cf-label" for="cf-name">Ime i prezime</label>
+            <input class="cf-input" type="text" id="cf-name" placeholder="npr. Marko Horvat" autocomplete="name">
+          </div>
+          <div class="cf-row">
+            <label class="cf-label" for="cf-contact">Email ili broj mobitela</label>
+            <input class="cf-input" type="text" id="cf-contact" placeholder="marko@gmail.com ili 091 234 5678" autocomplete="email">
+          </div>
+          <div class="cf-row">
+            <label class="cf-label" for="cf-message">Poruka (neobavezno)</label>
+            <textarea class="cf-input cf-textarea" id="cf-message" placeholder="Imam pitanje o..."></textarea>
+          </div>
+          <div class="cf-program-note" id="cf-note"></div>
+          <div class="cf-error" id="cf-error">Molimo upiši ime i kontakt podatke.</div>
+          <button class="cf-submit" type="submit" id="cf-submit-btn">Pošalji upit ✉️</button>
+        </form>
+
+        <div class="cf-success" id="cf-success">
+          <span>✅</span>
+          <span>Hvala! Poruka je poslana — javit ćemo ti se što prije.</span>
+        </div>
+
+        <div class="cf-send-error" id="cf-send-error">
+          <span>⚠️</span>
+          <span>Slanje nije uspjelo. Pokušaj nas kontaktirati direktno.</span>
+        </div>
+
+        <div class="cf-or"><span>ili nas kontaktiraj direktno</span></div>
+        <div class="cf-direct">
+          <a href="tel:043331030" class="cf-link">📞 043/331-030</a>
+          <a href="mailto:ravnatelj@tsd.hr" class="cf-link">✉️ ravnatelj@tsd.hr</a>
+        </div>
+      </div>
+
+      <!-- Secondary CTAs -->
+      <div class="cta-secondary">
+        <a class="btn-orange" href="https://www.tsd.hr" target="_blank" rel="noopener">
+          🌐&nbsp; Posjeti tsd.hr
+        </a>
+        <button class="btn-ghost" id="btn-retry">↺&nbsp; Ponovi kviz</button>
+      </div>
+
+    </div>
+    <p class="footer-line">
+      Tehnička škola Daruvar · Ivana Gundulića 14, 43500 Daruvar · 043/331-030 · ravnatelj@tsd.hr
+    </p>
+  </div>
+
+</div><!-- .app -->
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+
+const PROGRAMS = {
+  programiranje: {
+    name:   'Tehničar/ka za programiranje',
+    color:  '#1B4F8A',
+    rgb:    '27,79,138',
+    years:  4,
+    emoji:  '💻',
+    isNew:  true,
+    tags:   ['4-godišnji', 'Matura', 'Faks opcija', 'NOVO ★'],
+    desc:   'Razvij softver, web aplikacije i AI sustave. Najperspektivniji IT smjer s najvišim plaćama — od prvog dana tražen u cijeloj Europi.'
+  },
+  mehatronika: {
+    name:   'Tehničar/ka za mehatroniku',
+    color:  '#2E7D32',
+    rgb:    '46,125,50',
+    years:  4,
+    emoji:  '🤖',
+    isNew:  false,
+    tags:   ['4-godišnji', 'Matura', 'Faks opcija'],
+    desc:   'Spoj strojarstva, elektronike i programiranja. Gradi i programira industrijske robote, CNC strojeve i sustave automatizacije.'
+  },
+  elektronika: {
+    name:   'Teh. za elektroniku i komunikacije',
+    color:  '#6A1B9A',
+    rgb:    '106,27,154',
+    years:  4,
+    emoji:  '⚡',
+    isNew:  false,
+    tags:   ['4-godišnji', 'Matura', 'Faks opcija'],
+    desc:   'Telekomunikacijska oprema, elektronički sklopovi i IoT sustavi. A1, HT, Ericsson — telecom sektor stalno traži ovaj profil.'
+  },
+  promet: {
+    name:   'Tehničar/ka cestovnog prometa',
+    color:  '#00838F',
+    rgb:    '0,131,143',
+    years:  4,
+    emoji:  '🗺️',
+    isNew:  false,
+    tags:   ['4-godišnji', 'Matura', 'Veleučilište'],
+    desc:   'Organizacija i optimizacija prijevoza robe i putnika. Logistički sektor jedan od najbržerastućih u EU — Amazon, DPD, Schenker.'
+  },
+  elektro: {
+    name:   'Elektroinstalater/ka',
+    color:  '#F9A825',
+    rgb:    '249,168,37',
+    years:  3,
+    emoji:  '🔌',
+    isNew:  false,
+    tags:   ['3-godišnji', 'Deficitarno', 'Odmah posao'],
+    desc:   'Deficitarno zanimanje na HZZ listi 2025. Električne instalacije, NN mreže, rasvjeta — posao zagarantiran od prvog dana.'
+  },
+  auto: {
+    name:   'Automehatroničar/ka',
+    color:  '#E53935',
+    rgb:    '229,57,53',
+    years:  3,
+    emoji:  '🔩',
+    isNew:  false,
+    tags:   ['3-godišnji', 'Certifikat'],
+    desc:   'Dijagnostika i servisiranje modernih vozila. Električni automobili povećavaju potražnju — automehatroničari su budućnost auto-industrije.'
+  },
+  vozac: {
+    name:   'Vozač/ica motornog vozila',
+    color:  '#795548',
+    rgb:    '121,85,72',
+    years:  3,
+    emoji:  '🚛',
+    isNew:  false,
+    tags:   ['3-godišnji', 'Certifikat', 'EU tržište'],
+    desc:   'Cestovni prijevoz robe i putnika u cijeloj Europi. Kronični nedostatak vozača — 100.000+ slobodnih mjesta samo u EU.'
+  },
+  operater: {
+    name:   'Operater strojne obrade',
+    color:  '#546E7A',
+    rgb:    '84,110,122',
+    years:  3,
+    emoji:  '⚙️',
+    isNew:  false,
+    tags:   ['3-godišnji', 'Certifikat', 'Industrija'],
+    desc:   'CNC strojevi i precizna strojna obrada metala. Bez preciznih dijelova nema ni automobila ni aviona — ovaj profil je uvijek tražen.'
+  },
+  monter: {
+    name:   'Monter strojarskih instalacija',
+    color:  '#FF6F00',
+    rgb:    '255,111,0',
+    years:  3,
+    emoji:  '🏗️',
+    isNew:  false,
+    tags:   ['3-godišnji', 'Certifikat', 'Gradnja'],
+    desc:   'Montaža industrijskih cjevovoda, klimatizacije i sustava grijanja. Gradnja u Hrvatskoj na vrhuncu — monteri se raspisuju godinu unaprijed.'
+  }
+};
+
+const QUESTIONS = [
+  {
+    emoji: '🔧',
+    text: 'Kad ti se nešto pokvari, ti...',
+    answers: [
+      { text: 'Tražim rješenje online, istražujem forume i pokušavam sam riješiti problem', scores: {programiranje:3, elektronika:1} },
+      { text: 'Rastavim uređaj da vidim kako radi iznutra i pokušam fizički popraviti',     scores: {mehatronika:3, auto:2, elektro:1} },
+      { text: 'Nazovem majstora ili odvedem u servis — ali pažljivo gledam kako to rade',   scores: {auto:3, monter:1, elektro:1} },
+      { text: 'Organiziram tko će to riješiti i koordiniram cijeli proces',                  scores: {promet:3, vozac:2} }
+    ]
+  },
+  {
+    emoji: '💻',
+    text: 'U slobodno vrijeme najradije...',
+    answers: [
+      { text: 'Kodiram, igram igrice ili istražujem novu tehnologiju',              scores: {programiranje:3, elektronika:1} },
+      { text: 'Nešto gradim, popravljam ili modificiram rukama',                    scores: {mehatronika:3, operater:2, monter:2} },
+      { text: 'Vozim, putujem i istražujem nova mjesta i ceste',                    scores: {vozac:3, promet:2} },
+      { text: 'Popravljam električne stvari i radim s kabelima i instalacijama',    scores: {elektro:3, elektronika:2, auto:1} }
+    ]
+  },
+  {
+    emoji: '🧮',
+    text: 'Koji tip zadataka ti najviše odgovara?',
+    answers: [
+      { text: 'Pisanje koda, algoritmi i rješavanje logičkih problema',             scores: {programiranje:3, elektronika:1} },
+      { text: 'Fizički rad s preciznim alatima i strojevima',                       scores: {operater:3, monter:2, mehatronika:1} },
+      { text: 'Planiranje ruta, organizacija prijevoza i logistike',                scores: {promet:3, vozac:3} },
+      { text: 'Dijagnostika kvarova i popravak vozila ili strojeva',                scores: {auto:3, mehatronika:2, elektro:1} }
+    ]
+  },
+  {
+    emoji: '🤖',
+    text: 'Kad vidiš robota ili automat u tvornici, prva misao je...',
+    answers: [
+      { text: 'Kako bih ga programirao i nadogradio softverski',                    scores: {programiranje:3, mehatronika:1} },
+      { text: 'Kako je mehanički sklopljen i kako precizno funkcionira',             scores: {mehatronika:3, operater:2} },
+      { text: 'Koliko tereta može transportirati i ubrzati dostavu',                scores: {vozac:3, promet:2} },
+      { text: 'Koji senzori i strujni krugovi ga pokreću i kontroliraju',           scores: {elektronika:3, elektro:2, mehatronika:1} }
+    ]
+  },
+  {
+    emoji: '🔌',
+    text: 'Koji tip problema bi najradije rješavao/la na poslu?',
+    answers: [
+      { text: 'Bugove u kodu i optimizaciju performansi aplikacije',                scores: {programiranje:3, elektronika:1} },
+      { text: 'Kvar na industrijskom stroju ili CNC mašini',                        scores: {operater:3, mehatronika:2, auto:1} },
+      { text: 'Organizaciju prijevoznog puta i rješavanje kašnjenja',               scores: {promet:3, vozac:2} },
+      { text: 'Nestanak struje ili kvar u elektroinstalaciji',                      scores: {elektro:3, monter:2, elektronika:1} }
+    ]
+  },
+  {
+    emoji: '🌍',
+    text: 'Koji predmet ti je bio najzanimljiviji u školi?',
+    answers: [
+      { text: 'Fizika struje, elektronika, signali i komunikacijski sustavi',       scores: {elektronika:3, elektro:2, programiranje:1} },
+      { text: 'Auto mehanika, motori, konstrukcija i popravak vozila',              scores: {auto:3, mehatronika:2} },
+      { text: 'Geografija, vozački tečaj, karte i planiranje ruta',                 scores: {vozac:3, promet:2} },
+      { text: 'Informatika, matematika, algoritmi i logičke zagonetke',             scores: {programiranje:3, elektronika:1} }
+    ]
+  },
+  {
+    emoji: '🏗️',
+    text: 'Zamislite svoju idealnu radnu okolinu:',
+    answers: [
+      { text: 'Ured s računalima — tiho, pisanje koda i rješavanje problema',       scores: {programiranje:3, elektronika:1} },
+      { text: 'Tvornica, CNC strojevi, precizni metalni dijelovi i robotika',       scores: {operater:3, mehatronika:2} },
+      { text: 'Na otvorenom putu, za volanom, sloboda kretanja kroz Europu',        scores: {vozac:3, promet:1} },
+      { text: 'Gradilište, razvod instalacija i montaža industrijskih sustava',     scores: {monter:3, elektro:2} }
+    ]
+  },
+  {
+    emoji: '💼',
+    text: 'Što ti je najvažnije u budućem poslu?',
+    answers: [
+      { text: 'Visoka IT plaća i mogućnost rada od kuće ili u inozemstvu',          scores: {programiranje:3, elektronika:2} },
+      { text: 'Svakodnevni rad s vozilima — servis, dijagnostika, popravak',        scores: {auto:3, mehatronika:2} },
+      { text: 'Sloboda kretanja, putovanje i raznolikost svakodnevice',             scores: {vozac:3, promet:2} },
+      { text: 'Sigurno i deficitarno zanimanje — posao uvijek garantiran',          scores: {elektro:2, monter:3, operater:1} }
+    ]
+  },
+  {
+    emoji: '🔩',
+    text: 'Koji alat bi najradije imao/la u rukama?',
+    answers: [
+      { text: 'Laptop s IDE editorom i terminal prozor pun koda',                   scores: {programiranje:3, elektronika:1} },
+      { text: 'Torno, glodalica ili robotska ruka u radionici',                     scores: {operater:3, mehatronika:2} },
+      { text: 'Upravljač kamiona, GPS navigator i mapa Europe',                     scores: {vozac:3, promet:2} },
+      { text: 'Osciloskop, lemilica i multimetar u laboratoriju',                   scores: {elektronika:3, elektro:2, auto:1} }
+    ]
+  },
+  {
+    emoji: '🎯',
+    text: 'Koji projekt bi bio tvoj san?',
+    answers: [
+      { text: 'Razviti vlastitu mobilnu aplikaciju ili web servis',                 scores: {programiranje:3, elektronika:1} },
+      { text: 'Izgraditi i programirati industrijskog robota od nule',              scores: {mehatronika:3, operater:2} },
+      { text: 'Voziti kamion kroz Europu i vidjeti sve nove gradove',               scores: {vozac:3, promet:2} },
+      { text: 'Samostalno instalirati kompletan elektrosustav u novoj kući',        scores: {monter:3, elektro:2} }
+    ]
+  }
+];
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+
+let state = {
+  q: 0,
+  scores: {},
+  animating: false
+};
+
+let topProgram = null;
+
+function resetState() {
+  state.q = 0;
+  state.animating = false;
+  state.scores = Object.fromEntries(Object.keys(PROGRAMS).map(k => [k, 0]));
+  topProgram = null;
+}
+
+// ══════════════════════════════════════════════
+// SCREEN HELPERS
+// ══════════════════════════════════════════════
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ══════════════════════════════════════════════
+// START SCREEN — render program pills
+// ══════════════════════════════════════════════
+
+function initStart() {
+  const wrap = document.getElementById('pills-wrap');
+  wrap.innerHTML = Object.values(PROGRAMS).map(p =>
+    `<span class="pill" style="color:${p.color};border-color:${p.color};">
+      ${p.emoji} ${p.name}${p.isNew ? ' ★' : ''}
+    </span>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════
+
+function startQuiz() {
+  resetState();
+  showScreen('quiz-screen');
+  renderQuestion(0, false);
+}
+
+function renderQuestion(idx, animate) {
+  const body = document.getElementById('quiz-body');
+  const q = QUESTIONS[idx];
+  const letters = ['A','B','C','D'];
+
+  document.getElementById('q-num').textContent = idx + 1;
+  document.getElementById('prog-fill').style.width = ((idx + 1) / QUESTIONS.length * 100) + '%';
+
+  const html = `
+    <div class="q-wrap${animate ? '' : ' enter'}" id="q-wrap">
+      <span class="q-emoji">${q.emoji}</span>
+      <div class="q-text">${q.text}</div>
+      <div class="answers" id="answers">
+        ${q.answers.map((a, i) => `
+          <button class="ans-btn" data-idx="${i}" onclick="pickAnswer(${i})">
+            <span class="ans-letter">${letters[i]}</span>
+            <span style="flex:1">${a.text}</span>
+            <span class="check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+          </button>
+        `).join('')}
+      </div>
+    </div>`;
+
+  body.innerHTML = html;
+
+  // Trigger enter animation
+  requestAnimationFrame(() => {
+    const wrap = document.getElementById('q-wrap');
+    if (wrap) wrap.classList.add('enter');
+  });
+}
+
+function pickAnswer(aIdx) {
+  if (state.animating) return;
+  state.animating = true;
+
+  const q = QUESTIONS[state.q];
+  const answerScores = q.answers[aIdx].scores;
+
+  // Add scores
+  for (const [k, v] of Object.entries(answerScores)) {
+    if (k in state.scores) state.scores[k] += v;
+  }
+
+  // Visual feedback
+  const btns = document.querySelectorAll('.ans-btn');
+  btns.forEach((btn, i) => {
+    if (i === aIdx) btn.classList.add('selected');
+    else btn.classList.add('dimmed');
+  });
+
+  // Advance
+  const delay = 520;
+  setTimeout(() => {
+    if (state.q < QUESTIONS.length - 1) {
+      state.q++;
+
+      const wrap = document.getElementById('q-wrap');
+      if (wrap) {
+        wrap.classList.add('exit');
+        setTimeout(() => {
+          state.animating = false;
+          renderQuestion(state.q, true);
+        }, 280);
+      } else {
+        state.animating = false;
+        renderQuestion(state.q, false);
+      }
+    } else {
+      state.animating = false;
+      showResults();
+    }
+  }, delay);
+}
+
+// ══════════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════════
+
+function showResults() {
+  showScreen('results-screen');
+
+  // Sort all programs by score
+  const sorted = Object.entries(state.scores)
+    .sort((a, b) => b[1] - a[1]);
+
+  const maxScore = sorted[0][1] || 1;
+
+  // Store top program for contact form
+  topProgram = PROGRAMS[sorted[0][0]];
+  setTimeout(() => {
+    const noteEl = document.getElementById('cf-note');
+    if (noteEl && topProgram) {
+      noteEl.textContent = `Tvoj preporučeni smjer: ${topProgram.emoji} ${topProgram.name}`;
+    }
+  }, 200);
+
+  // Top 3
+  const top3El = document.getElementById('top3');
+  const ranks = ['🥇', '🥈', '🥉'];
+  top3El.innerHTML = '';
+
+  sorted.slice(0, 3).forEach(([key, score], i) => {
+    const p = PROGRAMS[key];
+    const pct = Math.round(score / maxScore * 100);
+    const card = document.createElement('div');
+    card.className = `res-card rank-${i+1}`;
+    card.style.setProperty('--card-color', p.color);
+    card.style.setProperty('--card-rgb', p.rgb);
+    card.style.borderColor = i === 0 ? p.color : 'var(--border)';
+    if (i === 0) card.style.boxShadow = `0 0 50px rgba(${p.rgb},.2)`;
+
+    // Left accent bar color
+    const style = document.createElement('style');
+    style.textContent = `.res-card:nth-child(${i+1})::before { background: ${p.color}; }`;
+    document.head.appendChild(style);
+
+    card.innerHTML = `
+      <div class="res-card-top">
+        <div class="res-rank">${ranks[i]}</div>
+        <div class="res-name-wrap">
+          <div class="res-name" style="color:${p.color}">${p.emoji} ${p.name}</div>
+          <div class="res-tags">
+            ${p.tags.map(t => `<span class="res-tag">${t}</span>`).join('')}
+          </div>
+        </div>
+        <div class="res-score-num" style="color:${p.color};border-color:${p.color}20">${pct}%</div>
+      </div>
+      <div class="res-desc">${p.desc}</div>
+      <div class="score-bar-bg">
+        <div class="score-bar-fill" id="bar-top-${i}" style="background:${p.color}"></div>
+      </div>`;
+    top3El.appendChild(card);
+
+    // Animate bar with delay
+    setTimeout(() => {
+      const bar = document.getElementById(`bar-top-${i}`);
+      if (bar) bar.style.width = pct + '%';
+    }, 300 + i * 150);
+  });
+
+  // Mini grid (all programs)
+  const miniEl = document.getElementById('mini-grid');
+  miniEl.innerHTML = '';
+  sorted.forEach(([key, score], i) => {
+    const p = PROGRAMS[key];
+    const pct = Math.round(score / maxScore * 100);
+    const item = document.createElement('div');
+    item.className = 'mini-card';
+    item.innerHTML = `
+      <div class="mini-name">${p.emoji} ${p.name}</div>
+      <div class="mini-bar-bg">
+        <div class="mini-bar-fill" id="mini-bar-${i}" style="background:${p.color}"></div>
+      </div>`;
+    miniEl.appendChild(item);
+
+    setTimeout(() => {
+      const bar = document.getElementById(`mini-bar-${i}`);
+      if (bar) bar.style.width = pct + '%';
+    }, 700 + i * 80);
+  });
+
+  // Fire confetti 🎉
+  setTimeout(launchConfetti, 400);
+}
+
+// ══════════════════════════════════════════════
+// CONTACT FORM — Formspree
+// ══════════════════════════════════════════════
+
+async function submitContact(e) {
+  e.preventDefault();
+
+  const nameEl    = document.getElementById('cf-name');
+  const contactEl = document.getElementById('cf-contact');
+  const messageEl = document.getElementById('cf-message');
+  const errorEl   = document.getElementById('cf-error');
+  const submitBtn = document.getElementById('cf-submit-btn');
+  const sendErrEl = document.getElementById('cf-send-error');
+
+  const name    = nameEl.value.trim();
+  const contact = contactEl.value.trim();
+  const message = messageEl.value.trim();
+
+  // Reset validation states
+  nameEl.classList.remove('invalid');
+  contactEl.classList.remove('invalid');
+  errorEl.style.display   = 'none';
+  sendErrEl.style.display = 'none';
+
+  if (!name || !contact) {
+    if (!name)    nameEl.classList.add('invalid');
+    if (!contact) contactEl.classList.add('invalid');
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const program = topProgram ? `${topProgram.emoji} ${topProgram.name}` : 'neodređen';
+
+  // Loading state
+  submitBtn.disabled  = true;
+  submitBtn.innerHTML = '<span class="cf-spinner"></span> Šaljem...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xpqyvdoa', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        ime_i_prezime:     name,
+        kontakt:           contact,
+        poruka:            message || '—',
+        preporuceni_smjer: program,
+        _subject:          `Kviz upit — ${program}`
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.ok !== false) {
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('cf-success').style.display  = 'flex';
+    } else {
+      throw new Error(data.error || 'server error');
+    }
+  } catch {
+    submitBtn.disabled  = false;
+    submitBtn.innerHTML = 'Pošalji upit ✉️';
+    sendErrEl.style.display = 'flex';
+  }
+}
+
+// ══════════════════════════════════════════════
+// CONFETTI
+// ══════════════════════════════════════════════
+
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = [
+    '#1B4F8A','#F5821F','#2E7D32','#6A1B9A',
+    '#00838F','#F9A825','#E53935','#FF6F00',
+    '#60A5FA','#FCD34D','#34D399','#F87171'
+  ];
+
+  const particles = Array.from({length: 140}, () => ({
+    x:    Math.random() * canvas.width,
+    y:    Math.random() * -canvas.height * .5,
+    w:    4 + Math.random() * 8,
+    h:    6 + Math.random() * 10,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    rotation: Math.random() * 360,
+    rotSpeed: (Math.random() - .5) * 6,
+    vx:   (Math.random() - .5) * 3.5,
+    vy:   1.8 + Math.random() * 3.5,
+    alpha: 1,
+    shape: Math.random() > .5 ? 'rect' : 'circle'
+  }));
+
+  let frame = 0;
+  const maxFrames = 260;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+
+    particles.forEach(p => {
+      if (p.y > canvas.height + 20) return;
+      alive = true;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rotation += p.rotSpeed;
+      p.vy += 0.04; // gravity
+      if (frame > maxFrames * .6) p.alpha = Math.max(0, p.alpha - .018);
+
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.fillStyle = p.color;
+
+      if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      }
+      ctx.restore();
+    });
+
+    frame++;
+    if (alive && frame < maxFrames + 60) {
+      requestAnimationFrame(draw);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  draw();
+}
+
+// ══════════════════════════════════════════════
+// RETRY
+// ══════════════════════════════════════════════
+
+function retryQuiz() {
+  resetState();
+  showScreen('start-screen');
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  initStart();
+  document.getElementById('btn-start').addEventListener('click', startQuiz);
+  document.getElementById('btn-retry').addEventListener('click', retryQuiz);
+});
+
+// Resize confetti canvas
+window.addEventListener('resize', () => {
+  const c = document.getElementById('confetti-canvas');
+  c.width  = window.innerWidth;
+  c.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
