@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Koje je zanimanje za tebe? – Tehnička škola Daruvar</title>
-  <meta name="description" content="Kratki kviz Tehničke škole Daruvar: odgovori na 9 pitanja i pogledaj koja ti zanimanja najbolje odgovaraju.">
+  <title>Koje ti je naše zanimanje najbliže? – Tehnička škola Daruvar</title>
+  <meta name="description" content="Zabavni kviz Tehničke škole Daruvar: odgovori na 9 pitanja i pogledaj koje ti je od naših zanimanja najbliže.">
   <link rel="stylesheet" href="fontovi/fontovi.css">
   <style>
     :root {
@@ -327,7 +327,9 @@
     .bar-row + .bar-row { border-top: 1px solid var(--bg); }
     .bar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
     .bar i { display: block; height: 100%; width: 0; background: var(--c); border-radius: 4px; transition: width .6s ease; }
-    .note { font-size: 13.5px; color: var(--muted); margin-top: 8px; }
+    .note { font-size: 15px; color: var(--muted); margin-top: 10px; max-width: 720px; }
+    .note a, .disclaimer a { color: var(--accent); font-weight: 600; }
+    .disclaimer { font-size: 14.5px; color: var(--muted); max-width: 560px; margin-top: 16px; }
 
     .next { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;
       background: var(--navy); color: #fff; border-radius: 8px; padding: 20px 24px; margin-top: 32px; }
@@ -374,9 +376,11 @@
   <main class="wrap">
     <div class="intro">
       <div class="kicker">Kviz · 9 pitanja</div>
-      <h1>Koje je zanimanje<br>za tebe?</h1>
-      <p class="lead">Odgovori što voliš raditi, a mi ćemo ti pokazati koja od naših zanimanja ti najviše odgovaraju.</p>
+      <h1>Koje ti je naše<br>zanimanje najbliže?</h1>
+      <p class="lead">Odgovori što voliš raditi i pogledaj koje je od devet zanimanja u našoj školi najbliže tvojim odgovorima.</p>
       <button class="btn btn-main" id="btn-start">Započni kviz</button>
+      <p class="disclaimer">Ovo je zabavni kviz o zanimanjima u našoj školi, a ne test profesionalnog usmjeravanja.
+        Za to razgovaraj sa školskim pedagogom ili ispuni upitnik <a href="https://razvojkarijere.hzz.hr/moj-izbor-upitnik-interesa-i-kompetencija/" target="_blank" rel="noopener">Moj izbor</a> u CISOK-u (HZZ).</p>
     </div>
 
     <div class="programs" id="programs"></div>
@@ -422,7 +426,9 @@
 
     <div class="h-sec">Svih 9 zanimanja</div>
     <div class="bars" id="bars"></div>
-    <p class="note">Kviz je samo smjernica. Najbolje je porazgovarati s našim učenicima i nastavnicima, ovdje na štandu ili u školi.</p>
+    <p class="note">Ovo je zabavni kviz koji uspoređuje tvoje odgovore samo s našim zanimanjima, a ne test profesionalnog usmjeravanja.
+      Za pravi odabir razgovaraj sa školskim pedagogom ili ispuni upitnik <a href="https://razvojkarijere.hzz.hr/moj-izbor-upitnik-interesa-i-kompetencija/" target="_blank" rel="noopener">Moj izbor</a> u CISOK-u (HZZ).
+      Rado ćemo ti i mi odgovoriti na pitanja, ovdje na štandu ili u školi.</p>
 
     <div class="next">
       <div>
